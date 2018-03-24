@@ -47,9 +47,11 @@ void loop() {
     delay(20);
 
     move = setLCDCursors();
-    Serial.print("in menu: "); Serial.print(menu_index);
-    Serial.print("   move = "); Serial.println(move);
-
+    if(sw3){
+      Serial.print("in menu: "); Serial.print(menu_index);
+      Serial.print("   move = "); Serial.println(move);
+    }
+      Serial.print("swc3 = "); Serial.println(swc3);
     current.functions[0](); // current function runs continually
 
     if(sw1){
@@ -63,7 +65,6 @@ void loop() {
       /* if going o pare                  if parent == selected        */
       else if(menu_table[menu_index].connections[0] == menu_table[menu_index].connections[move+1]){
         current.functions[2](); // transitionBack function
-        delay(400);
         menu_index = menu_table[menu_index].connections[0]; // move to parent
         current = menu_table[menu_index];
       }

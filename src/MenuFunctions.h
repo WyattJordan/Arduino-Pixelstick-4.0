@@ -184,6 +184,100 @@ void pickString(){
     printString(enc3%(string_len-LCD_WIDTH+1),false);
   }
 }
+void readyPickString(){
+  enc2_changed = true;
+  num_strings = getNumSDStrings();
+  setEncTo0(enc2, num_strings);
+}
+void pickFontStyle(){
+  font_index = enc2%num_fonts;
+  bold    = swc2%2==1;
+  italics = swc3%2==1;
+  height_index = enc3%4;
+  if(millis()-time_ref>40){
+    printFontName();
+    time_ref = millis();
+  }
+}
+void editText(){
+  type = swc2%NUM_TYPES;
+  Serial.print("type = "); Serial.println(type); 
+  if(type == 1)   {charval = enc2%NUM_ALPHA+97;}   // lowercase
+  else if(type==2){charval = enc2%NUM_DIGIT+48;}   // digits
+  else if(type==3){charval = syms[enc2%NUM_SYMS];} // symbols
+  else            {charval = enc2%NUM_ALPHA+65;}   // capitals
+
+  letter_index = enc3%(string_len+1);
+  if(letter_index > LCD_WIDTH) {start = 0;}
+  else                         {start = LCD_WIDTH - letter_index + 1;}
+
+  printStringEditing();
+
+  if(sw3){
+    sw3=false;
+    if(letter_index == string_len && letter_index<STRING_SIZE-1){
+      string_len++;
+      enc3++; // move cursor to new space so user knows it changed
+    }
+    string[letter_index] = charval;
+  }
+}
+void readyEditText(){
+  setEncTo0(enc2, NUM_TYPES);
+  lcd.noBlink();
+  lcd.cursor();
+}
+void setTextColors(){
+  bwand_num  = enc2%num_wands; // previously this was: = enc2%(num_wands+1)-1
+  bwand_num2 = enc3%num_wands;
+  if(sw2){ // swap background and text colors
+    setEncToVal(enc3, num_wands+1, bwand_num);
+    enc3++;
+    setEncToVal(enc2, num_wands+1, bwand_num2);
+    enc2++;
+    sw2 = false;
+  }
+  if(millis()-time_ref>50){
+    readSDWand(bwand_num2);
+    background.R = R; background.G = G; background.B = B;
+    readSDWand(bwand_num);
+    printNumsTwoNu(bwand_num, bwand_num2);
+    displayTwoColors();
+  }
+}
+void readySetTextColors(){
+  setEncToVal(enc2, num_wands, bwand_num);
+  setEncToVal(enc3, num_wands, bwand_num2);
+}
+void setTextSkeleton(){
+  start = enc2%(NUM_LEDS-pixel_height+1);
+  setEncByClick(swc2, NUM_LEDS-pixel_height+1, enc2, sw2);
+
+  short range=1;
+  if(start<NUM_LEDS-pixel_height-start){range = start;}
+  else{range = NUM_LEDS-pixel_height-start;}
+  if(enc2_changed){
+    enc2_changed = false;
+    setEncToVal(enc3, range, back_width);
+  }
+  if(range==0){back_width = 0;}
+  else{back_width = enc3%(range);}
+  if(swc3%2==0){
+    swc3++;
+    setEncTo0(enc3, NUM_LEDS-pixel_height-start);
+  }
+  printNums(back_width, start);
+  displayFontSkeleton();
+}
+void displayTextWidth(){
+  display_time = enc2%100;
+  printNums(string_in_width/12,(string_in_width%12)*10/12, display_time);
+}
+
+
+
+
+
 
 
 

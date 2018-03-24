@@ -30,7 +30,7 @@ const m menu_table[26] PROGMEM = {
   {doNothing,doNothing,doNothing}},
   /*  TEXT_4  */
   {{HOME,       TEXTFONT,   EDITTEXT,   HOME,       X,          X,          X},
-  {pickString,doNothing,doNothing}}, // NOT DONE!
+  {pickString,readyPickString,doNothing}}, // NOT DONE!
   /*  FUNCTIONS_5  */
   {{HOME,       X,          X,          X,          X,          X,          X},
   {doNothing,doNothing,doNothing}},
@@ -60,9 +60,8 @@ const m menu_table[26] PROGMEM = {
   {{WANDCOLOR,  SAVEWAND,   WANDCOLOR,  HOME,        X,          X,          X},
   {editWandHSV, enc2True,    mapHSVtoRGB}},
   /*  SAVEWAND_13  */
-  {{X,          X,          X,          X,           X,          X,          X},
+  {{X,          HOME,          X,          X,           X,          X,          X},
   {saveWand,doNothing,doNothing}},
-  //TODO add functionality for bands
   /*  EDITBAND_14  */    // this is editing the iter and num bands
   {{BANDS,        WANDCOLOR,    BANDS,    HOME,       X,          X,          X},
   {editBandShape,readyEditBandShape,doNothing}},
@@ -76,32 +75,32 @@ const m menu_table[26] PROGMEM = {
   {{BANDCOLOR,    SAVEBAND,    X,         X,          X,          X,          X},
   {editBandHSV,   enc2True,         mapHSVtoRGB}},
   /*  SAVEBAND_18  */
-  {{X,            X,           X,         X,          X,          X,          X},
+  {{X,            HOME,           X,         X,          X,          X,          X},
   {saveBand,doNothing,doNothing}},
 
   /*  TEXTFONT_19  */
   {{TEXT,         TEXTCOLOR,    TEXT,          X,          X,          X,   X},
-  {doNothing,doNothing,doNothing}},
+  {pickFontStyle,doNothing,doNothing}},
   /*  EDITTEXT_20  */
-  {{TEXT,         SAVEBAND,     X,             X,          X,          X,   X},
-  {doNothing,doNothing,doNothing}},
+  {{TEXT,         SAVETEXT,     TEXT,             X,          X,          X,   X},
+  {editText,doNothing,doNothing}},
 
   /*  TEXTCOLOR_21  */
-  {{TEXTFONT,     TEXTBACKGROUND, TEXTFONT,    X,          X,          X,   X},
-  {doNothing,doNothing,doNothing}},
+  {{TEXTFONT,     TEXTBACKGROUND, TEXTFONT,    HOME,          X,          X,   X},
+  {setTextColors,readySetTextColors,doNothing}},
   /*  TEXTBACKGROUND_22  */
   {{TEXTCOLOR,    TEXTWIDTH,      TEXTCOLOR,   HOME,       X,          X,   X},
-  {doNothing,doNothing,doNothing}},
+  {setTextSkeleton,doNothing,doNothing}},
   /*  TEXTWIDTH_23 */
   {{TEXTBACKGROUND,TEXTRUN,       TEXTBACKGROUND,HOME,     X,          X,   X},
-  {doNothing,doNothing,doNothing}},
+  {displayTextWidth,doNothing,doNothing}},
   /*  TEXTRUN_24  */
   {{X,            X,              X,          X,           X,          X,   X},
-  {doNothing,doNothing,doNothing}},
+  {displayTextWidth,doNothing,doNothing}},
 
   /*  SAVETEXT_25  */
-  {{X,            X,              X,          X,          X,          X,   X},
-  {doNothing,doNothing,doNothing}}
+  {{X,            HOME,              X,          X,          X,          X,   X},
+  {doNothing,writeStringFile,doNothing}}
 
 };
 
