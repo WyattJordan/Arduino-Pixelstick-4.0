@@ -5,7 +5,7 @@
 #include <My_LCD.h>
 #include <GeneralFunctions.h>
 #include <TextFunctions.h>
-
+//#region Menu index definitions
 #define X     0 // this is a dummy menu that isn't actually used
 #define HOME  1
 #define ADJ   2
@@ -33,10 +33,11 @@
 
 #define TEXTCOLOR 21
 #define TEXTBACKGROUND 22
-#define TEXTWIDTH 23
+#define SETTIME 23
 #define TEXTRUN  24
 #define SAVETEXT 25
-/////////////////////////////////////////////////////////////////
+//#endregion
+
 void throwError(){
   lcd.clear();
   lcd.write(" Error Menu Hit ");
@@ -45,8 +46,10 @@ void doNothing(){}
 void enc2True(){
   enc2_changed = true;
 }
-//Wand menu functions
+
+//#region Wand menu functions
 void pickWand(){
+
   bwand_num = enc2%(num_wands+1)-1; //also allow -1 for nu value
   printNums(bwand_num);
   if(enc2_changed || millis()-time_ref>50){
@@ -86,6 +89,8 @@ void editWandRGB(){
 void editWandHSV(){
   setSW2ValuesHSV();
   mapHSVtoRGB();
+
+
   printNums(H,S,V);
   displayLocalWand(start, len, R,G,B, enc2_changed);
 }
@@ -97,8 +102,9 @@ void saveWand(){
   menu_index = WANDS;
   blacklist = true;
 }
+//#endregion
 
-// Band menu functions
+//#region Band menu functions
 void pickBand(){
   bwand_num = enc2%(num_band_files+1)-1; //also allow -1 for nu value
   if(swc3%2==0){
@@ -136,11 +142,14 @@ void readyEditBandShape(){
     setEncToVal(enc3, NUM_LEDS, 1); // 1   iter default
   }
 }
+
 void readyEditBandColors(){
   setEncTo0(enc3, num_bands);
 }
 void editBandRGB(){
   bandcol = enc3%num_bands;
+
+
   setSW2ValuesRGB();
   printNums(R,G,B, bandcol + 1); // start at 1 cause counting
   displayLocalBandEdited();
@@ -168,8 +177,9 @@ void saveBand(){
   menu_index = BANDS;
   blacklist = true;
 }
+//#endregion
 
-// Text menu functions
+//#region Text menu functions
 void pickString(){
   if(enc2_changed){
     enc2_changed = false;
@@ -189,6 +199,7 @@ void readyPickString(){
   num_strings = getNumSDStrings();
   setEncTo0(enc2, num_strings);
 }
+
 void pickFontStyle(){
   font_index = enc2%num_fonts;
   bold    = swc2%2==1;
@@ -201,7 +212,7 @@ void pickFontStyle(){
 }
 void editText(){
   type = swc2%NUM_TYPES;
-  Serial.print("type = "); Serial.println(type); 
+  Serial.print("type = "); Serial.println(type);
   if(type == 1)   {charval = enc2%NUM_ALPHA+97;}   // lowercase
   else if(type==2){charval = enc2%NUM_DIGIT+48;}   // digits
   else if(type==3){charval = syms[enc2%NUM_SYMS];} // symbols
@@ -228,8 +239,8 @@ void readyEditText(){
   lcd.cursor();
 }
 void setTextColors(){
-  bwand_num  = enc2%num_wands; // previously this was: = enc2%(num_wands+1)-1
-  bwand_num2 = enc3%num_wands;
+  bwand_num  = enc2%(num_wands+1)-1; // previously this was: = enc2%(num_wands+1)-1
+  bwand_num2 = enc3%(num_wands+1)-1;
   if(sw2){ // swap background and text colors
     setEncToVal(enc3, num_wands+1, bwand_num);
     enc3++;
@@ -237,19 +248,21 @@ void setTextColors(){
     enc2++;
     sw2 = false;
   }
-  if(millis()-time_ref>50){
+  //if(millis()-time_ref>50){
     readSDWand(bwand_num2);
     background.R = R; background.G = G; background.B = B;
     readSDWand(bwand_num);
     printNumsTwoNu(bwand_num, bwand_num2);
     displayTwoColors();
-  }
+  //}
 }
 void readySetTextColors(){
   setEncToVal(enc2, num_wands, bwand_num);
   setEncToVal(enc3, num_wands, bwand_num2);
+  num_wands = getNumBWands(false);
 }
 void setTextSkeleton(){
+
   start = enc2%(NUM_LEDS-pixel_height+1);
   setEncByClick(swc2, NUM_LEDS-pixel_height+1, enc2, sw2);
 
@@ -269,16 +282,107 @@ void setTextSkeleton(){
   printNums(back_width, start);
   displayFontSkeleton();
 }
-void displayTextWidth(){
-  display_time = enc2%100;
-  printNums(string_in_width/12,(string_in_width%12)*10/12, display_time);
+void readySetTextSkeleton(){
+  setEncTo0(enc2, NUM_LEDS-pixel_height+1);
+  getTextDimensions(); // get height and width
 }
 
+void setTextWidthAndTime(){
+  temp_width = enc2%(string_in_width*2); // can double image width
+  setEncByClick(swc3, string_in_width*2, enc2, sw2);
+  display_time = enc3%MAXDISPTIME; // max of 7 mins (420 seconds)
+  setEncByClick(swc3, MAXDISPTIME, enc3, sw3);
+  // just put inches here instead of % ft
+  printNums(temp_width/12,(temp_width%12)/* *10/12 */, display_time);
+}
+void setWidth(){
+  setEncToVal(enc2, string_in_width*2, string_in_width);
+  setEncToVal(enc3, MAXDISPTIME, string_in_width/36); // assumes walking speed of 3ft/s or 36in/s
+  Serial.print("width in pixels = "); Serial.println(string_pixel_width);
+  Serial.print("width in inches = "); Serial.println(string_in_width);
+  Serial.print("time in seconds = "); Serial.println(string_in_width/36);
+}
+void readyRunText(){
+  blacklist = true;     // once done displaying will manually change sw1
+  menu_index = SETTIME; // and go back to set time menu
 
+  time_ref = millis(); // frame delay in ms
+  framedelay = ((double) display_time)/((double) string_pixel_width) * 1000;
+}
 
+void runText(){
+    //TODO
+    //  check if its an upper case, lower case, or symbol
+    //  open the file
+    //  read 3 bytes and write one LED for wole strip
+    //  write strip and show, set delay between vertical lines
+    displayFontSkeleton();
+    char data[] = {'\0','\0','\0'}; // for reading RGB from file
+    Serial.println("starting shit");
+    for( int l=0; l<string_len; l++){
+      char c = string[l];
+      String filename = getFontDir() + getLetterFileName(c) + ".txt";
+      Serial.print("letter file is: "); Serial.println(filename);
+      File readFile = SD.open(filename, FILE_READ);
+      readFile.read(&data, 3); // read 3 bytes into data
 
+      time_ref2 = millis();
+      short bit = 0;
+      short dummybits = 8 - pixel_height%8;
+      //TODO see if line below works
+      bit = dummybits;
+      int col_num=0;
+      Serial.println("entering column loop");
+      for(int col = 0; col<getLetterLength(c); col++){
+        col_num++;
+        for(int d=start; d<pixel_height+start; d++){
+          if(c=='~'){
+            leds[d].setRGB(background.R,background.G,background.B); // tilda is a space
+          }
+          else{
+            // biy/8 ranges 0,1,2 for which byte to use
+            if(( data[bit/8] >> (8-bit-(7-bit/8)) ) & 1){// if its a 1 in the data
+              leds[d].setRGB(R,G,B);
+              //Serial.print("=");
+            }
+            else{
+              leds[d].setRGB(background.R,background.G,background.B); // off
+              //Serial.print(" ");
+            }
+            bit++; // increment if not tilda
+          }
+          if(bit == 24){ // if next bit is out of range
+            bit = 0; // reset index
+            readFile.read(&data, 3); // read next 3 bytes
+          }
 
+          //update current size and time
+          unsigned long time_elapsed = millis() - time_ref;
+          unsigned int in = col_num * INPERPIX;
+          printNums(time_elapsed/1000,display_time,
+          in/12, in%12, time_elapsed/(display_time*1000) );
 
+          delay(framedelay - (millis() - time_ref2) );
+          FastLED.show(); // done displaying one column of the letter
+
+        } // done reading and displaying a column
+
+        /* this code should be useless now... TODO
+        Serial.println();
+        if(bit + dummybits > 23){
+          bit = bit - 24 + dummybits; // reset to first non dummybit
+          readFile.read(&data, 3); // read next 24 bits
+        }
+        */
+
+      }// done all columns
+      readFile.close(); // close file for that letter
+
+      delay(1); // determine delay between letters, should be 0 since spaces are a letter...
+    }
+    sw1 = true; // this will go back to settime (see readyRunText())
+}
+//#endregion
 
 
 

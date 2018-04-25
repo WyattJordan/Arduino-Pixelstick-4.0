@@ -1,0 +1,14 @@
+git add .          //Stages all files, 
+git add test.cpp   //stages test.cpp
+git status         //lists all modifications or added files
+git commit -m "commit message"   //saves the changes to the local git repo
+git push          //pushes saved changes to server repo
+git pull          //pulls saved changes from server repo, this is when conflicts occur
+
+git branch        //lists all branches
+git branch new_branch  //creates a new branch named new_branch with a copy from all the code that is currently checked out
+553014
+
+
+before merging new_branch back into master it is better to pull and merge master into new_branch to update it then
+merge new_branch back into master. This will make only the added stuff from new_branch need to be merged

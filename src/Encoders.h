@@ -18,7 +18,7 @@ bool sw3 = false;
 
 
 
-void interruptonD0(){   //D3 is clock on encoder 1
+void interruptonD0(){   //D3 is clock, D0 is data on encoder 1
     enc1_changed = true;
     if(digitalRead(1))
       enc1--;
@@ -27,15 +27,15 @@ void interruptonD0(){   //D3 is clock on encoder 1
 
 
 }
-void interruptonD4(){   //D6 is clock signal on encoder 2
+void interruptonD4(){   //D5 is clock, D5 is data on encoder 2
     enc2_changed = true;
     if(digitalRead(5))
-      enc2--;
-    else
       enc2++;
+    else
+      enc2--;
 
 }
-void interruptonD6(){   //D9 is clock signal on encoder 3
+void interruptonD6(){   //D7 is clock, D6 is data on encoder 3
   enc3_changed = true;
   if(digitalRead(7))
     enc3--;

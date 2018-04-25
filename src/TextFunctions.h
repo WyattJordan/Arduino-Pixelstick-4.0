@@ -4,12 +4,12 @@
 short num_strings, string_len, string_index, font_index, height_index, pixel_height,
 display_time, back_width; //will also use start for offsetting text
 bool bold, italics;
-unsigned long string_pixel_width, string_in_width;
+unsigned long string_pixel_width, string_in_width, temp_width;
 
 unsigned short type, charval, letter_index;
 char types[] = {'A', 'a', '0', '!'};
 /* 39 is '  34 is "  92 is \    total length is 32*/
-char syms[] = { ' ','!','?','@','*',',','.',39,34,'#','<','=','>','+','$','%','&',
+char syms[] = { ' ','!','?','@','*',',','.',39,34,'#','<','=','>','+',' ','%','&',
 '-',':',';','^','_','`','/',92,'{','|','}','[',']','(',')','~'};
 char string[STRING_SIZE]   = {'a','b','c','d','e','f','g','h','i','z','z','z',
 'z','z','z','z','a','b','c','d','e','f','g','h','i','z','z','z','z','z','z',
@@ -62,7 +62,7 @@ void printString(int start2, bool editing){
 }// end of printString() function
 
 
-void printStringEditing(){///////////////////////////////////////////////////////////////////
+void printStringEditing(){//////////////////////////////////////////////////////
   printString(start, true);
   lcd.setCursor(num_locations[2] + letter_index - start + 1, 0/* first row*/);
   lcd.print((char) charval);
@@ -110,6 +110,7 @@ void printStringIndex(){
   lcd.print(string_index);
   printSpaces(num_locations[6]-numLen(string_index));
 }
+// saves the current string[] to a file names strings[bwand_num].txt
 void writeStringFile(){
   String file;
   if(bwand_num==-1){
@@ -126,6 +127,7 @@ void writeStringFile(){
   }
   f.close();
 }
+// loads strings[bwand_num].txt into string[]
 void readSDString(){
   clearString();
   String temp = String(string_index);
@@ -155,12 +157,42 @@ String getFontDir(){
   else if( bold && italics){
     temp = "c";
   }
-
-  Serial.println("about to convert char to String");
+  //Serial.println("about to convert char to String");
   return "f/" + String(font_table[font_index]) + "/" + String(height[height_index]) + temp + "/";
 
 }
-void getTextLength(){
+// searches sizes.txt (with right font) for a char and returns width
+int getLetterLength(char c){
+  String dir = getFontDir();
+  String file = dir + "sizes.txt";
+  ifstream myFileStream;
+  myFileStream.open(file.c_str());
+  myFileStream.getline(buff, LCD_WIDTH+1, '\n');// first line is constant height
+  bool notfound = false;
+  while(1){ // just in case the char is not in the file have a limit
+    myFileStream.getline(buff, LCD_WIDTH+1, '\n');
+    if(buff[0]==c){break;}
+    if(myFileStream.eof()){
+      notfound = true;
+      break;
+    }
+  }
+  buff[0] = buff[1]; // re-arrange since first char is the char to display
+  buff[1] = buff[2]; // just want the numbers after the char
+  buff[2] = buff[3];
+  buff[3] = 'z';
+  myFileStream.close();
+  if(notfound){
+    Serial.print("Character length not found in: ");
+    Serial.print(file);
+    Serial.print(" for character: ");
+    Serial.println(c);
+    return 0;
+  }
+  return getBuffNum();
+}
+// sums character sizes in string[]
+void getTextDimensions(){
   string_pixel_width=0;
   String dir = getFontDir();
   String file = dir + "sizes.txt";
@@ -168,34 +200,18 @@ void getTextLength(){
     ifstream myFileStream;
     myFileStream.open(file.c_str());
     pixel_height = readLineGetNum(myFileStream);
-    Serial.print("pixel_height = "); Serial.println(pixel_height);
     myFileStream.close();
+    //Serial.print("pixel_height = "); Serial.println(pixel_height);
     //Serial.println("entering string[i] loop");
     for(int i=0; i< string_len; i++){
-      ifstream myFileStream;
-      myFileStream.open(file.c_str());
-      myFileStream.getline(buff, LCD_WIDTH+1, '\n');
-      char c = string[i];
-      if(c == ' '){c = 'A';} // spaces don't exist, use width of cap A
-      while(true){
-        myFileStream.getline(buff, LCD_WIDTH+1, '\n');
-        if(buff[0]==c){
-          break;
-        }
-      }
-      buff[0] = buff[1]; // re-arrange since first char is the char to display
-      buff[1] = buff[2]; // just want the numbers after the char
-      buff[2] = buff[3];
-      buff[3] = 'z';
-      string_pixel_width += getBuffNum();
-      myFileStream.close();
+      string_pixel_width += getLetterLength(string[i]);
     } // end of looping thru all characters in string
   }// end of reading file
-  string_in_width = string_pixel_width/3.6585; // using 144px/meter conversion
+  string_in_width = string_pixel_width * INPERPIX; //  /3.892; // using 144px/meter conversion
   /*Serial.print("pixel width = "); Serial.println(string_pixel_width);
   Serial.print("in width = "); Serial.println(string_in_width);//*/
 }
-
+// used to set background height
 void displayFontSkeleton(){
   for(int i=0; i<NUM_LEDS; i++){
     if(i<start-back_width || i>start+pixel_height+back_width){
@@ -212,21 +228,46 @@ void displayFontSkeleton(){
   }
   FastLED.show();
 }
+// displays text color in center of stick and background on ends
 void displayTwoColors(){
-  for(int i=0; i<NUM_LEDS/2;i++){
-    leds[i].setRGB(R,G,B); // text color
-  }
-  for(int i=NUM_LEDS/2; i<NUM_LEDS;i++){
-    leds[i].setRGB(background.R,background.G,background.B); //backgrond color
+  for(int i=0; i<NUM_LEDS; i++){
+    if(i>=NUM_LEDS/4 && i<NUM_LEDS*3/4){
+      leds[i].setRGB(R,G,B); // text color
+    }
+    else{
+      leds[i].setRGB(background.R,background.G,background.B); //backgrond color
+    }
   }
   FastLED.show();
+}
+// given a symbol finds its index in the sym array
+int findSymIndex(char c){
+  for(int i=0; i<NUM_SYMS; i++){
+      if(c==syms[i]){
+        return i;
+      }
+  }
+  return NUM_SYMS-1;// last symbol is '~' which is the spaceholder
+}
+// given a char detemines the .txt filename for that char
+String getLetterFileName(char c){
+  String file = "";
+  if( (c>64 && c<91) || (c>47 && c<58)){ // is upper case or a number
+    file = String(c);
+  }
+  else if(c>96 && c<123){ // is lower case
+      file = "L"+String(c);
+  }
+  else{ // is symbol
+    file = "sy"+String(findSymIndex(c));
+  }
+  return file;
 }
 
 
 //not used anymore
 void copyBuff2String(){
-  int i=0;
-  for(i; i<BUFF_SIZE; i++){
+  for(int i=0; i<BUFF_SIZE; i++){
     if(buff[i] != '`'){
         string[i] = buff[i];
     }

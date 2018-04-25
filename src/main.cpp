@@ -20,7 +20,7 @@ void setup() {
   lcd.noCursor();
   lcd.noBlink();
 
-  FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);
+  FastLED.addLeds<WS2812B, DATA_PIN,GRB>(leds, NUM_LEDS);
   stickOff();
 
   setEncoderPins();
@@ -47,11 +47,6 @@ void loop() {
     delay(20);
 
     move = setLCDCursors();
-    if(sw3){
-      Serial.print("in menu: "); Serial.print(menu_index);
-      Serial.print("   move = "); Serial.println(move);
-    }
-      Serial.print("swc3 = "); Serial.println(swc3);
     current.functions[0](); // current function runs continually
 
     if(sw1){
@@ -62,7 +57,7 @@ void loop() {
         current = menu_table[menu_index]; Serial.println("in blacklist!");
         blacklist = false;
       }
-      /* if going o pare                  if parent == selected        */
+      /* if going to parent                  if parent == selected        */
       else if(menu_table[menu_index].connections[0] == menu_table[menu_index].connections[move+1]){
         current.functions[2](); // transitionBack function
         menu_index = menu_table[menu_index].connections[0]; // move to parent

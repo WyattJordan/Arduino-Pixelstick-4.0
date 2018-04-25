@@ -4,10 +4,10 @@
 #include <LiquidCrystal_PCF8574.h>
 
 LiquidCrystal_PCF8574 lcd(0x27);
-//char buff[BUFF_SIZE]   = {'a','b','c','d','e','f','g','h','i','z','z','z','z','z','z','z','a','b','c','d','e','f','g','h','i','z','z','z','z','z','z','z','a','b','c','d','e','f','g','h','i','z','z','z'};
-char buff[BUFF_SIZE]   = {'a','b','c','d','e','f','g','h','i','z','z','z','z','z','z','z'};
+char buff[BUFF_SIZE]   = {'a','b','c','d','e','f','g','h','2','z','z','z','z','z','z','z','3','z','z','z','z','z','z','z'};
 short curs_locations[] = {0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
-short num_locations[]  = {0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1}; //max used is 12...
+// save up to 5 numbers (# of numbers, no.1 row, no.1 col, no.1 size, no.2 row, no.2 col, no.2 size, etc. )
+short num_locations[]  = {0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
 
 void printSpaces(short x){
   while(x>0){
@@ -125,6 +125,27 @@ void printNums(int a, int b, int c, int d){
   lcd.setCursor(num_locations[11],num_locations[10]);
   lcd.print(d);
   printSpaces(num_locations[12]-numLen(c));
+}
+void printNums(int a, int b, int c, int d, int e){
+  lcd.setCursor(num_locations[2],num_locations[1]);
+  lcd.print(a);
+  printSpaces(num_locations[3]-numLen(a));
+
+  lcd.setCursor(num_locations[5],num_locations[4]);
+  lcd.print(b);
+  printSpaces(num_locations[6]-numLen(b));
+
+  lcd.setCursor(num_locations[8],num_locations[7]);
+  lcd.print(c);
+  printSpaces(num_locations[9]-numLen(c));
+
+  lcd.setCursor(num_locations[11],num_locations[10]);
+  lcd.print(d);
+  printSpaces(num_locations[12]-numLen(c));
+
+  lcd.setCursor(num_locations[14],num_locations[13]);
+  lcd.print(d);
+  printSpaces(num_locations[15]-numLen(c));
 }
 
 

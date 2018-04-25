@@ -1,6 +1,6 @@
 #ifndef GENERALFUNCTIONS
 #define GENERALFUNCTIONS
-
+//#region includes
 #include <Arduino.h>
 #include <SPI.h>
 #include "SdFat.h"
@@ -12,6 +12,9 @@
 #include <My_LCD.h>
 
 #include "FastLED.h"
+//#endregion
+
+//#region Global Variables (BSS)
 CRGB leds[NUM_LEDS];	//declare the LED array
 
 struct color{
@@ -26,12 +29,15 @@ SdFat SD;
 
 unsigned char R,G,B,H,S,V;
 unsigned short start, len, num_wands, num_band_files,
-num_bands, num_iters, bandcol, time_ref;
+num_bands, num_iters, bandcol;
+unsigned long time_ref, time_ref2;
+float framedelay;
 short bwand_num, band_blend, bwand_num2;
 
 int move=-1;
 bool ignoreSW1 = false;
 bool blacklist = false;
+//#endregion
 
 int setLCDCursors(){// puts the ">" in the correct spot and erases all other previous cursors
   if(curs_locations[0]==0){
@@ -52,7 +58,14 @@ int setLCDCursors(){// puts the ">" in the correct spot and erases all other pre
   return pos;
   }
 }
-
+void outputBuff(bool line){
+  for(int i = 0; i<BUFF_SIZE; i++){
+    Serial.print(buff[i]);
+  }
+  if(line){
+    Serial.print('\n');
+  }
+}
 void clearBuff(){
   for(int i=0; i<BUFF_SIZE; i++){
     buff[i] = '`';
@@ -207,8 +220,8 @@ void mapRGBtoHSV(){
     else{delta = (float)(R-G)/255;}
     if(R!=0) {S = 255.0*(delta/((float)R/255.0));} else{S=0;};
   	temp = ((float)G/255.0 - (float)B/255.0 )/ delta;
-  	int temp2 = temp;
-    /*Serial.print("temp ="); Serial.println(temp);
+  	/*int temp2 = temp;
+    Serial.print("temp ="); Serial.println(temp);
     Serial.print("temp2 ="); Serial.println(temp2);
     Serial.print("temp2mod6 ="); Serial.println(temp2%6);
     //H = 60 *(temp2%6 + temp);//*/
