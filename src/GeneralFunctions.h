@@ -33,7 +33,7 @@ num_bands, num_iters, bandcol;
 unsigned long time_ref, time_ref2;
 float framedelay;
 short bwand_num, band_blend, bwand_num2;
-
+short bwand_q[] = {QQ,QQ,QQ,QQ,QQ,QQ,QQ,QQ};
 int move=-1;
 bool ignoreSW1 = false;
 bool blacklist = false;
@@ -147,8 +147,8 @@ void setEncByClick(short swcount, short range, volatile unsigned short &enc, boo
     sw=false;
     if     (swcount%4==0){setEncToVal(enc, range, range/4);}
     else if(swcount%3==0){setEncToVal(enc, range, range/2);}
-    else if(swcount%2==0){setEncToVal(enc, range, range*3/4);}
-    else if(swcount%2==1){setEncToVal(enc, range, range-1);}
+    else if(swcount%2==1){setEncToVal(enc, range, range*3/4);}
+    else if(swcount%2==0){setEncToVal(enc, range, range-1);}
   }
 }
 void setValuesHSV(){

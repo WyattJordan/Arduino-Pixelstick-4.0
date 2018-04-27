@@ -18,6 +18,9 @@
 #define NUM_DIGIT 10 // digits 0-9
 #define INPERPIX    0.2734035
 #define MAXDISPTIME 420  // the max number of seconds to dsplay text (7mins)
+// for FUNCTIONS
+#define QQ -300 // a special number which is read as blank in the bwand_q
+#define MAXBLINK 2000 // max of 2 seconds on blink
 #define DATA_PIN    A6
 #define NUM_LEDS    288
 

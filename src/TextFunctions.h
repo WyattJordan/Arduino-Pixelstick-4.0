@@ -2,8 +2,9 @@
 #define TEXTFUNCTIONS
 #include <GeneralFunctions.h>
 short num_strings, string_len, string_index, font_index, height_index, pixel_height,
-display_time, back_width; //will also use start for offsetting text
-bool bold, italics;
+back_width; //will also use start for offsetting text
+double display_time;
+bool bold, italics, stop=false;
 unsigned long string_pixel_width, string_in_width, temp_width;
 
 unsigned short type, charval, letter_index;
@@ -121,6 +122,12 @@ void writeStringFile(){
     SD.remove(file.c_str());
   }
   f = SD.open(file, FILE_WRITE);
+  int len = 0;
+  while(string[len]!='`' && len < string_len){
+    Serial.println(String(string[len]));
+    len++;
+  }
+  string_len = len;
   f.println(string_len);
   for(int i=0; i<string_len; i++){
     f.print(string[i]);
@@ -186,8 +193,10 @@ int getLetterLength(char c){
     Serial.print("Character length not found in: ");
     Serial.print(file);
     Serial.print(" for character: ");
-    Serial.println(c);
-    return 0;
+    Serial.println(String(c));
+    Serial.println("using length of ~ instead");
+    getLetterLength('~');
+    return getBuffNum();
   }
   return getBuffNum();
 }
