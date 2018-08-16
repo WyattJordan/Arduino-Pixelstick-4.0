@@ -23,7 +23,7 @@ Code for building your own pixelstick for light painting (long exposure photogra
   Coming soon! (hopefully) Upload any image and have the pixelstick display that image as it is moved at a constant rate.  
 
 # I Want One
-  Contact me (wyattsjordan@gmail.com). Seriously, the documentation on this is clearly not done and if you're really interested in constructing one yourself you're gonna need some guidance cause squeezing maximum capability out of an arduino to do all the stuff I wanted this thing to do leads to a pretty unintuitive menu system.  
+  Contact me (wyattsjordan@gmail.com). Seriously, the documentation on this is clearly not done and if you're really interested in constructing one yourself you're gonna need some guidance. I squeezed the maximum capability out of an arduino possible for his project which led to a pretty unintuitive UI.  
 
   Caveat: (some time and $)  
   Here are the parts and total cost:  
@@ -34,67 +34,70 @@ Code for building your own pixelstick for light painting (long exposure photogra
 # Program Implementation Overview:  
 
 ## Menu flow  
-See Menus.h, each menu has a corresponding menu struct organized in a large menu_table. Each struct contains an array of other indices in the menu table corresponding to it's parent menu and submenus as well as a list of 3 function pointers. The list contains a function to execute continually while that menu is being displayed, a function that runs when that menu is entered, and function to run when that menu's back button is hit.  
-Functions that run continually would be things such as updating the LED string when making the general shape odf a new wand or band pattern.  
-The function that executes when the user enters a menu often adjusts the encoder counts so that they will have certain default or saved value.  
- An example of the back button is when the user goes from HSV color selection back a menu to select RGB color selection. In this case the HSV values are converted to RGB before entering the RGB menu to preserve the color.
+  See Menus.h, each menu has a corresponding menu struct organized in a large menu_table. Each struct contains an array of other indices in the menu table corresponding to it's parent menu and submenus as well as a list of 3 function pointers. The list contains a function to execute continually while that menu is being displayed, a function that runs when that menu is entered, and function to run when that menu's back button is hit.  
+
+  Functions that run continually would be things such as updating the LED string when making the general shape odf a new wand or band pattern.  
+
+  The function that executes when the user enters a menu often adjusts the encoder counts so that they will have certain default or saved value.  
+ 
+  An example of the back button is when the user goes from HSV color selection back a menu to select RGB color selection. In this case the HSV values are converted to RGB before entering the RGB menu to preserve the color.
 
 
 ## Menu File Explanation  
 Each menu file contains a list of numbers and the strings that should be displayed on the LCD. The numbers indicate the cursor locations and dynamic information locations. The specific meaning of each number is explained by using m/9.txt as an example:  
 // number of cursor locations (in this case in front of Continue, Back, and one one more at the very end to quit to main  
 3          
-1	 // row of cursor 1  
-0	 // col of cursor 1  
-1	 // row of cursor 2  
-10       // col of cursor 2  
-1 	 // row of cursor 3  
-15	 // col of cursor 3  
-2        // number of dynamic strings to display (in this case start and length)  
+1	   // row of cursor 1  
+0	   // col of cursor 1  
+1	   // row of cursor 2  
+10         // col of cursor 2  
+1 	   // row of cursor 3  
+15	   // col of cursor 3  
+2          // number of dynamic strings to display (in this case start and length)  
 0	 // row of dynamic string 1  
 6	 // col of dynamic string 1  
 3	 // character length of dynamic string 1  
 0	 // row of dynamic string 2  
 13	 // col of dynamic string 2  
 3	 // character length of dynamic string 2  
-Start:#__Len:#__  
+Start:\#__Len:\#__  
  Continue  Back   
 
 ## Wand and Band Files Explanation  
 A wand file contains 5 numbers:  
-1. - start index on brush  
-2. - length of wand  
-3. - R  
-4. - G  
-5. - B  
+1. start index on brush  
+2. length of wand  
+3. R  
+4. G  
+5. B  
 
-## A Band file contains 2 + 3*(num bands) numbers:
-1. - number of repitions of the pattern (evenly over the stick)
-2. - number of different colors
-3. - R1
-4. - G1
-5. - B1
-6. - R2
-7. - G2
-8. - B2
+A Band file contains 2 + 3*(num bands) numbers:
+1. number of repitions of the pattern (evenly over the stick)
+2. number of different colors
+3. R1
+4. G1
+5. B1
+6. R2
+7. G2
+8. B2  
 etc.  
 
 ## Font File System  
 Fonts are organized in the following fashion  
 
 f/  
-   /FontName1  
-	/FontSpecific1 (Ex: 144r.txt)  
-		/sizes.txt  
-		/A.txt  
-		/B.txt  
-		/C.txt  
-		etc. for all characters  
-	/FontSpecific2  
-	/FontSpecific3  
-	/FontSpecific4  
-   /FontName2  
-   /FontName3  
+----/FontName1  
+--------/FontSpecific1 (Ex: 144r.txt)  
+----------------/sizes.txt  
+----------------/A.txt  
+----------------/B.txt  
+----------------/C.txt  
+----------------etc. for all characters  
+--------/FontSpecific2  
+--------/FontSpecific3  
+--------/FontSpecific4  
+----/FontName2  
+----/FontName3  
 
 FontNames are things like "Times New Roman" or "Agency".  
     FontSpecifics are the number of LEDs to use (72, 144, 216, or 288) and a character to switch the font type (r - regular, i - italicized, b - bold, c - both italicized and bolded)  
