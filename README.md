@@ -1,5 +1,5 @@
 # What is a Pixelstick?
-    It's a programmable string of leds for light painting (long exposure photography). The original company to make one is here: http://www.thepixelstick.com/ and they have an up and coming competitor here: http://lumibrush.com but I built one myself on the cheap.
+It's a programmable string of leds for light painting (long exposure photography). The original company to make one is here: http://www.thepixelstick.com/ and they have an up and coming competitor here: http://lumibrush.com but I built one myself on the cheap.
 
 # Examples:
 ![Demo](/imgs/pxl_stick.jpg)  
