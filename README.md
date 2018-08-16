@@ -60,8 +60,8 @@ Each menu file contains a list of numbers and the strings that should be display
 0 // 	   row of dynamic string 2  
 13// 	   col of dynamic string 2  
 3 // 	   character length of dynamic string 2  
-Start:___Len:___   // first line of actual text to display on lcd
- Continue  Back    // second line of actual text to display on lcd
+Start:___Len:___ // first line of actual text to display on lcd ( _ = space)
+_Continue__Back_ // second line of actual text to display on lcd  
 
 ## Wand and Band Files Explanation  
 A wand file contains 5 numbers:  
