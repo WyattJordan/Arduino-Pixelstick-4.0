@@ -1,5 +1,5 @@
-# Arduino-Pixelstick-4.0
-Code for building your own pixelstick for light painting (long exposure photography). What is a pixelstick? See this: http://www.thepixelstick.com/
+# What is a Pixelstick?
+It's a programmable string of leds for light painting (long exposure photography). The original company to make on is here: http://www.thepixelstick.com/ but I built one on the cheap.
 
 # Examples:
 ![Demo](/imgs/pxl_stick.jpg)  
@@ -23,7 +23,7 @@ Code for building your own pixelstick for light painting (long exposure photogra
   Coming soon! (hopefully) Upload any image and have the pixelstick display that image as it is moved at a constant rate.  
 
 # I Want One
-  Contact me (wyattsjordan@gmail.com). Seriously, the documentation on this is clearly not done and if you're really interested in constructing one yourself you're gonna need some guidance. I squeezed the maximum capability out of an arduino possible for his project which led to a pretty unintuitive UI.  
+  Contact me (wyattsjordan@gmail.com). Seriously, the documentation on this is clearly not done and if you're really interested in constructing one yourself you're gonna need some guidance. I squeezed the maximum capability out of an arduino possible for this project which led to a pretty unintuitive UI.  
 
   Caveat: (some time and $)  
   Here are the parts and total cost:  
