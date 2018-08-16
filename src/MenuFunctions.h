@@ -1,5 +1,5 @@
-#ifndef MENUFUCNTIONS
-#define MENUFUCNTIONS
+#ifndef MENUFUNCTIONS
+#define MENUFUNCTIONS
 #include <Arduino.h>
 #include <Encoders.h>
 #include <My_LCD.h>

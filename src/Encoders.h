@@ -24,8 +24,6 @@ void interruptonD0(){   //D3 is clock, D0 is data on encoder 1
       enc1--;
     else
       enc1++;
-
-
 }
 void interruptonD4(){   //D5 is clock, D5 is data on encoder 2
     enc2_changed = true;
@@ -33,7 +31,6 @@ void interruptonD4(){   //D5 is clock, D5 is data on encoder 2
       enc2++;
     else
       enc2--;
-
 }
 void interruptonD6(){   //D7 is clock, D6 is data on encoder 3
   enc3_changed = true;
@@ -41,13 +38,16 @@ void interruptonD6(){   //D7 is clock, D6 is data on encoder 3
     enc3--;
   else
     enc3++;
-
 }
+
 void interruptonA1(){   //encoder 1 button
-  sw1=true;swc1++;
+  sw1=true;
+  swc1++;
 }
 void interruptonA2(){   //encoder 2 button
-  sw2=true;swc2++;}
+  sw2=true;
+  swc2++;
+}
 void interruptonD8(){   //encoder 3 button
   sw3=true;
   swc3++;
