@@ -45,23 +45,23 @@ Code for building your own pixelstick for light painting (long exposure photogra
 
 ## Menu File Explanation  
 Each menu file contains a list of numbers and the strings that should be displayed on the LCD. The numbers indicate the cursor locations and dynamic information locations. The specific meaning of each number is explained by using m/9.txt as an example:  
-// number of cursor locations (in this case in front of Continue, Back, and one one more at the very end to quit to main  
-3          
-1	   // row of cursor 1  
-0	   // col of cursor 1  
-1	   // row of cursor 2  
-10         // col of cursor 2  
-1 	   // row of cursor 3  
-15	   // col of cursor 3  
-2          // number of dynamic strings to display (in this case start and length)  
-0	 // row of dynamic string 1  
-6	 // col of dynamic string 1  
-3	 // character length of dynamic string 1  
-0	 // row of dynamic string 2  
-13	 // col of dynamic string 2  
-3	 // character length of dynamic string 2  
-Start:\#__Len:\#__  
- Continue  Back   
+
+3 //       number of cursor locations (in this case in front of Continue, Back, and one one more at the very end to quit to main            
+1 // 	   row of cursor 1  
+0 // 	   col of cursor 1  
+1 // 	   row of cursor 2  
+10// 	   col of cursor 2  
+1 // 	   row of cursor 3  
+15// 	   col of cursor 3  
+2 // 	   number of dynamic strings to display (in this case start and length)  
+0 // 	   row of dynamic string 1  
+6 // 	   col of dynamic string 1  
+3 // 	   character length of dynamic string 1  
+0 // 	   row of dynamic string 2  
+13// 	   col of dynamic string 2  
+3 // 	   character length of dynamic string 2  
+Start:___Len:___   // first line of actual text to display on lcd
+ Continue  Back    // second line of actual text to display on lcd
 
 ## Wand and Band Files Explanation  
 A wand file contains 5 numbers:  
