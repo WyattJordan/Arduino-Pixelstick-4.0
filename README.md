@@ -120,7 +120,7 @@ Schematic for the first encoder. The second and third encoders have the same con
 
 ![Encoder Schematic](/imgs/encoder_schematic.PNG)
 ## PCB
-This is the final PCB design completed in PCB Artist for easy ordering through advanced circuits. 
+This is the final PCB design completed in PCB Artist for easy ordering through advanced circuits. This design can be found in the PCB_Design.pcb file in the root of this repo and there is also a parts list excel file for anyone interested in building their own.
 
 ![PCB Routes](/imgs/pcb_routed.PNG)
 
