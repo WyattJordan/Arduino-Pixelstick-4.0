@@ -114,11 +114,11 @@ FontNames are things like "Times New Roman" or "Agency".
 ## Schematics
 Logic Conversion from the 5V LCD to the 3.3V MKR arduino.
 
-![LCD Schematic](/imgs/logic_converter_schematic.png)
+![LCD Schematic](/imgs/logic_converter_schematic.PNG)
 
 Schematic for the first encoder. The second and third encoders have the same connections except their pins are different. See Encoders.h for the other pin assignments.  
 
-![Encoder Schematic](/imgs/encoder_schematic.png)
+![Encoder Schematic](/imgs/encoder_schematic.PNG)
 ## PCB
 This is the final PCB design completed in PCB Artist for easy ordering through advanced circuits. 
 
